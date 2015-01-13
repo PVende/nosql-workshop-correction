@@ -100,7 +100,7 @@ L'insertion d'un document se fait via la méthode `insert()`. Par exemple, pour 
 
 ```
 db.personnes.insert({ "prenom" : "Jean", "nom" : "DUPONT" })
-``̀
+```
 
 Remarque : la collection est créée automatiquement si elle n'existe pas encore.
 
