@@ -10,6 +10,9 @@ import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Date;
 
+/**
+ * Importe les 'installations' dans MongoDB.
+ */
 public class InstallationsImporter {
 
     private final DBCollection installationsCollection;
@@ -36,8 +39,10 @@ public class InstallationsImporter {
                 .substring(1, line.length() - 1)
                 .split("\",\"");
 
+        // TODO je mettrais bien en "trou" toute la construction du document.
         return new BasicDBObject()
                 .append("_id", columns[1])
+                .append("version", "1") // TODO point important : la version du document.
                 .append("nom", columns[0])
                 .append(
                         "adresse",
