@@ -45,28 +45,6 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
-
-            <!-- Documentation Markdown vers HTML -->
-            <plugin>
-                <groupId>com.ruleoftech</groupId>
-                <artifactId>markdown-page-generator-plugin</artifactId>
-                <version>0.6</version>
-                <executions>
-                    <execution>
-                        <phase>process-sources</phase>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <inputDirectory>${project.basedir}</inputDirectory>
-                    <copyDirectories>assets</copyDirectories>
-                    <defaultTitle>Documentation du workshop NoSQL</defaultTitle>
-                    <headerHtmlFile>${basedir}/assets/header.html</headerHtmlFile>
-                    <footerHtmlFile>${basedir}/assets/footer.html</footerHtmlFile>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
