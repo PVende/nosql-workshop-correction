@@ -61,7 +61,10 @@
                 </executions>
                 <configuration>
                     <inputDirectory>${project.basedir}</inputDirectory>
-                    <copyDirectories>doc</copyDirectories>
+                    <copyDirectories>assets</copyDirectories>
+                    <defaultTitle>Documentation du workshop NoSQL</defaultTitle>
+                    <headerHtmlFile>${basedir}/assets/header.html</headerHtmlFile>
+                    <footerHtmlFile>${basedir}/assets/footer.html</footerHtmlFile>
                 </configuration>
             </plugin>
         </plugins>
