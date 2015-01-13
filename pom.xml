@@ -35,6 +35,7 @@
 
     <build>
         <plugins>
+            <!-- Compilateur Java -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -42,6 +43,25 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
+                </configuration>
+            </plugin>
+
+            <!-- Documentation Markdown vers HTML -->
+            <plugin>
+                <groupId>com.ruleoftech</groupId>
+                <artifactId>markdown-page-generator-plugin</artifactId>
+                <version>0.6</version>
+                <executions>
+                    <execution>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <inputDirectory>${project.basedir}</inputDirectory>
+                    <copyDirectories>doc</copyDirectories>
                 </configuration>
             </plugin>
         </plugins>
