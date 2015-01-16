@@ -31,6 +31,7 @@ public class EquipementsImporter {
         String[] columns = line.split(",");
 
         String installationId = columns[2];
+        // TODO je mettrais bien en "trou" la construction des requêtes 'searchQuery' et 'updateQuery'
         BasicDBObject searchQuery = new BasicDBObject("_id", installationId);
 
         DBObject equipement = new BasicDBObject()

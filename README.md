@@ -2,6 +2,23 @@
 
 *Découverte de [MongoDB](http://www.mongodb.org/) et d'[Elasticsearch](http://www.elasticsearch.org/), par la pratique !*
 
+Au programme :
+
+* [Prise en main de MongoDB](prise-en-main-de-mongodb)
+    * [Installation](installation)
+    * [Prise en main du shell](prise-en-main-du-shell)
+    * [Opérations de base](operations-de-base)
+        * [Insertion d'un document](insertion-dun-document)
+        * [Mise à jour d'un document](mise-a-jour-dun-document)
+* [Prise en main d'Elasticsearch](prise-en-main-delasticsearch)
+* [Application Java](application-java)
+    * [Import des données dans MongoDB](import-des-donnees-dans-mongodb)
+    * [Services Java](services-java)
+    * [Import des données dans Elasticsearch](import-des-donnees-dans-elasticsearch)
+    * [Recherche full-text](recherche-full-texte)
+    * [Recherche géographique](recherche-geographique)
+* [Solutions](solutions)
+
 ## Prise en main de MongoDB
 
 Quelques rappels avant de démarrer :
@@ -76,7 +93,7 @@ use workshop
 
 Le shell met à disposition un objet Javascript `db` qui permet d'interagir avec la base de données. Par exemple pour obtenir de l'aide :
 
-```
+```javascript
 db.help()
 ```
 
@@ -88,7 +105,7 @@ show collections
 
 Pour accéder à une collection nommée `geeks`, et par exemple afficher ses statistiques :
 
-```
+```javascript
 db.geeks.stats()
 ```
 
@@ -98,7 +115,7 @@ db.geeks.stats()
 
 L'insertion d'un document se fait via la méthode `insert()`. Par exemple, pour insérer un document dans la collection `personnes` :
 
-```
+```javascript
 db.personnes.insert({ "prenom" : "Jean", "nom" : "DUPONT" })
 ```
 
@@ -108,16 +125,9 @@ Remarque : la collection est créée automatiquement si elle n'existe pas encore
 
 Insérez un "Geek" dans une collection nommée `geeks`, avec les attributs suivants :
 
-* nom
-* prénom
-* âge
-
-<button onclick="document.getElementById('solution-insert-1').style.display = 'block'">Voir la solution</button>
-<div id="solution-insert-1" style="display:none">
-    <code>
-    db.geeks.insert({ "prenom" : "Manuel", "nom" : "Dorne", age : 32 })
-    </code>
-</div>
+* nom : Dorne
+* prénom : Manuel
+* âge : 32
 
 #### Mise à jour d'un document
 
@@ -151,3 +161,13 @@ TODO
 ### Recherche géographique
 
 TODO
+
+## Solutions
+
+### MongoDB - opérations de base
+
+### Insertion d'un document
+
+```javascript
+db.geeks.insert({ "prenom" : "Manuel", "nom" : "Dorne", age : 32 })
+```
