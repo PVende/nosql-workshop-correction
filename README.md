@@ -4,20 +4,20 @@
 
 Au programme :
 
-* [Prise en main de MongoDB](prise-en-main-de-mongodb)
-    * [Installation](installation)
-    * [Prise en main du shell](prise-en-main-du-shell)
-    * [Opérations de base](operations-de-base)
-        * [Insertion d'un document](insertion-dun-document)
-        * [Mise à jour d'un document](mise-a-jour-dun-document)
-* [Prise en main d'Elasticsearch](prise-en-main-delasticsearch)
-* [Application Java](application-java)
-    * [Import des données dans MongoDB](import-des-donnees-dans-mongodb)
-    * [Services Java](services-java)
-    * [Import des données dans Elasticsearch](import-des-donnees-dans-elasticsearch)
-    * [Recherche full-text](recherche-full-texte)
-    * [Recherche géographique](recherche-geographique)
-* [Solutions](solutions)
+* [Prise en main de MongoDB](#prise-en-main-de-mongodb)
+    * [Installation](#installation)
+    * [Prise en main du shell](#prise-en-main-du-shell)
+    * [Opérations de base](#operations-de-base)
+        * [Insertion d'un document](#insertion-dun-document)
+        * [Mise à jour d'un document](#mise-a-jour-dun-document)
+* [Prise en main d'Elasticsearch](#prise-en-main-delasticsearch)
+* [Application Java](#application-java)
+    * [Import des données dans MongoDB](#import-des-donnees-dans-mongodb)
+    * [Services Java](#services-java)
+    * [Import des données dans Elasticsearch](#import-des-donnees-dans-elasticsearch)
+    * [Recherche full-text](#recherche-full-texte)
+    * [Recherche géographique](#recherche-geographique)
+* [Solutions](#solutions)
 
 ## Prise en main de MongoDB
 
