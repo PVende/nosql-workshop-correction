@@ -27,4 +27,11 @@ title: Installations sportives des Pays de la Loire
 
 <h2>Une installation au hasard ...</h2>
 
-<p>TODO ! (work in progress ...)</p>
+<div id="random-installation"></div>
+
+<script type="text/jsx">
+    React.render(
+            <Installation url="/api/installations/random" />,
+            document.getElementById('random-installation')
+    );
+</script>
