@@ -107,7 +107,7 @@ show collections
 
 ### Opérations CRUD
 
-### Recherche : find()
+#### Recherche : find()
 
 La méthode `find()` possède deux paramètres (optionnels) :
 
@@ -222,19 +222,67 @@ TODO
 
 ## Application Java
 
-TODO description générale de l'application : équipements sportifs des Pays de la Loire (open data).
+L'objectif est de développer une application manipulants des données relatives aux installations sportives de la région Pays de la Loire.
+
+Les données sont issues de [http://data.paysdelaloire.fr](http://data.paysdelaloire.fr).
+
+Trois jeux de données vont particulièrement nous intéresser et sont disponibles dans le projet (format CSV) :
+
+* [Installations](http://data.paysdelaloire.fr/donnees/detail/equipements-sportifs-espaces-et-sites-de-pratiques-en-pays-de-la-loire-fiches-installations)
+* [Equipements](http://data.paysdelaloire.fr/donnees/detail/equipements-sportifs-espaces-et-sites-de-pratiques-en-pays-de-la-loire-fiches-equipements)
+* [Activités](http://data.paysdelaloire.fr/donnees/detail/equipements-sportifs-espaces-et-sites-de-pratiques-en-pays-de-la-loire-activites-des-fiches-equ)
+
+Des liens existent entre les trois jeux de données :
+
+* une installation possède un ou plusieurs équipements
+* une ou plusieurs activités peuvent être pratiquées sur un équipement donné.
 
 ![model](assets/model.png)
 
 ### Import des données dans MongoDB
 
-TODO
+La première tâche consiste à créer la collection des installations sportives à partir des trois fichiers CSV, en utilisant le driver MongoDB natif Java.
+
+Pour cela, recherchez les `TODO` dans le code du module `batch`, complétez le code pour obtenir des documents de cette forme :
+
+```javascript
+{
+    "_id": "440390003",
+    "nom": "La Pierre Tremblante",
+    "adresse": {
+        "numero": "",
+        "voie": "Chemin des rives",
+        "lieuDit": "",
+        "codePostal": "44640",
+        "commune": "Cheix-en-Retz"
+    },
+    "location": {
+        "type": "Point",
+        "coordinates": [
+            -1.816274,
+            47.181243
+        ]
+    },
+    "multiCommune": false,
+    "nbPlacesParking": 0,
+    "nbPlacesParkingHandicapes": 0,
+    "dateMiseAJourFiche": ISODate("2014-06-18T00:00:00Z"),
+    "equipements": [
+        {
+            "numero": "191989",
+            "nom": "La Pierre tremblante",
+            "type": "Point d'embarquement et de débarquement isolé",
+            "famille": "Site d'activités aquatiques et nautiques",
+            "activites": [
+                "Canoë de randonnée",
+                "Pêche au coup en eau douce"
+            ]
+        }
+    ]
+}
+```
 
 ### Services Java
-
-TODO
-
-### Import des données dans Elasticsearch
 
 TODO
 
@@ -243,5 +291,9 @@ TODO
 TODO
 
 ### Recherche géographique
+
+TODO
+
+### Import des données dans Elasticsearch
 
 TODO
