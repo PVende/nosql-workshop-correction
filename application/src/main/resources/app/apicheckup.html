@@ -7,6 +7,7 @@ title: API checkup
 <p>Cette page permet de visualiser la disponibilité des services exposés par l'API</p>
 
 <div id="statuses"></div>
+<div id="test"></div>
 
 <script type="text/jsx">
     var routes = [
@@ -15,6 +16,9 @@ title: API checkup
         {name: "Random", url: "/api/installations/random"},
         {name: "Stats", url: "/api/installations/stats"}
     ];
+
+    var Label = ReactBootstrap.Label;
+    var Glyphicon = ReactBootstrap.Glyphicon;
 
     var RouteStatusLine = React.createClass({
         getInitialState: function () {
@@ -25,10 +29,10 @@ title: API checkup
                 url: this.props.url,
                 dataType: 'json',
                 success: function (data) {
-                    this.setState({status: "OK", statusClassName: "label label-success"});
+                    this.setState({status: "OK", style: "success"});
                 }.bind(this),
                 error: function (xhr, status, err) {
-                    this.setState({status: "KO", statusClassName: "label label-danger"});
+                    this.setState({status: "KO", style: "danger"});
                 }.bind(this)
             });
         },
@@ -43,7 +47,7 @@ title: API checkup
                                 {this.props.url}
                             </td>
                             <td>
-                                <span className="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+                                <Glyphicon glyph="refresh" className="glyphicon-refresh-animate" />
                             </td>
                         </tr>
                 );
@@ -57,7 +61,7 @@ title: API checkup
                             <td>
                                 {this.props.url}</td>
                             <td>
-                                <span className={this.state.statusClassName}>{this.state.status}</span>
+                                <Label bsStyle={this.state.style}>{this.state.status}</Label>
                             </td>
                         </tr>
                 );
@@ -93,5 +97,4 @@ title: API checkup
             <RouteStatusTable routes={routes} />,
             document.getElementById('statuses')
     );
-
 </script>
