@@ -2,6 +2,7 @@ package nosql.workshop.services;
 
 import com.google.inject.Inject;
 import nosql.workshop.model.Installation;
+import nosql.workshop.model.stats.Average;
 import nosql.workshop.model.stats.CountByActivity;
 import org.jongo.MongoCollection;
 import org.jongo.MongoCursor;
@@ -89,7 +90,7 @@ public class InstallationService {
      * @return l'installation avec le plus d'équipements.
      */
     public Installation installationWithMaxEquipments() {
-        return installations.aggregate("{$project:{nbEquipements:{$size:'$equipements'}, nom: 1}}")
+        return installations.aggregate("{$project:{nbEquipements:{$size:'$equipements'}, nom: 1, equipements : 1}}")
                 .and("{$sort: {nbEquipements:-1}}")
                 .and("{$limit: 1}")
                 .as(Installation.class)
@@ -108,5 +109,13 @@ public class InstallationService {
                 .and("{$project: {_id: 0, activite : '$_id', total : 1}}")
                 .and("{$sort: {total : -1}}")
                 .as(CountByActivity.class);
+    }
+
+    public double averageEquipmentsPerInstallation() {
+        return installations.aggregate("{$group: {_id: null, average : {$avg : {$size : '$equipements'}}}}")
+                .and("{$project: {_id: 0, average: 1}}")
+                .as(Average.class)
+                .get(0)
+                .getAverage();
     }
 }

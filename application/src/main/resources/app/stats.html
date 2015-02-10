@@ -4,18 +4,71 @@ title: Statistiques des installations sportives
 ---
 <h1>[[title]]</h1>
 
-<h2>Nombre total d'installations</h2>
+<div id="stats"></div>
 
-<p>TODO ! (work in progress ...)</p>
+<script type="text/jsx">
+    var InstallationsStats = React.createClass({
+        getInitialState: function () {
+            return {};
+        },
+        componentDidMount: function () {
+            $.ajax({
+                url: '/api/installations/stats',
+                dataType: 'json',
+                success: function (data) {
+                    this.setState({stats: data});
+                }.bind(this),
+                error: function (xhr, status, err) {
+                    console.error(this.props.url, status, err.toString());
+                }.bind(this)
+            });
+        },
+        render: function () {
+            var Glyphicon = ReactBootstrap.Glyphicon;
+            var Label = ReactBootstrap.Label;
+            if (!this.state.stats) {
+                return (
+                        <div>
+                            <Glyphicon glyph="refresh" className="glyphicon-refresh-animate" />
+                        </div>
+                );
+            }
+            else {
+                var installationsByActivity = this.state.stats.countByActivity.map(function (item) {
+                    return (
+                            <tr>
+                                <td>{item.activite}</td>
+                                <td>{item.total}</td>
+                            </tr>
+                    );
+                });
+                return (
+                        <div>
+                            <h2>Quelques stats basiques</h2>
+                            <div className="well well-sm"><big>Au total, il y a <Label bsStyle="primary">{this.state.stats.totalCount}</Label> installations sportives dans les Pays de la Loire</big></div>
+                            <div className="well well-sm"><big>En moyenne, il y a <Label bsStyle="primary">{this.state.stats.averageEquipmentsPerInstallation.toFixed(2)}</Label> équipements par installation</big></div>
+                            <div className="well well-sm"><big><Label bsStyle="primary">{this.state.stats.installationWithMaxEquipments._id + ' - ' + this.state.stats.installationWithMaxEquipments.nom}</Label> est l'installation avec le plus d'équipements ( <Label bsStyle="primary">{this.state.stats.installationWithMaxEquipments.equipements.length}</Label> )</big></div>
 
-<h2>Nombre d'installations par activité</h2>
+                            <h2>Nombre d'installations par activité</h2>
+                            <table className="table">
+                                <thead>
+                                    <tr>
+                                        <th>Activité</th>
+                                        <th>Nombre d'installations</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {installationsByActivity}
+                                </tbody>
+                            </table>
+                        </div>
+                );
+            }
+        }
+    });
 
-<p>TODO ! (work in progress ...)</p>
-
-<h2>Installation avec le plus d'équipements</h2>
-
-<p>TODO ! (work in progress ...)</p>
-
-<h2>Nombre moyen d'équipements par installation</h2>
-
-<p>TODO ! (work in progress ...)</p>
+    React.render(
+            <InstallationsStats />,
+            document.getElementById('stats')
+    );
+</script>

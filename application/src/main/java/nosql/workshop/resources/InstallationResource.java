@@ -46,6 +46,7 @@ public class InstallationResource {
         stats.setTotalCount(installationService.count());
         stats.setCountByActivity(installationService.countByActivity());
         stats.setInstallationWithMaxEquipments(installationService.installationWithMaxEquipments());
+        stats.setAverageEquipmentsPerInstallation(installationService.averageEquipmentsPerInstallation());
         return stats;
     }
 }

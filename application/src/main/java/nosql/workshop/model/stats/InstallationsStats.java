@@ -9,6 +9,7 @@ public class InstallationsStats {
     private long totalCount;
     private List<CountByActivity> countByActivity;
     private Installation installationWithMaxEquipments;
+    private double averageEquipmentsPerInstallation;
 
     public long getTotalCount() {
         return totalCount;
@@ -32,5 +33,13 @@ public class InstallationsStats {
 
     public void setInstallationWithMaxEquipments(Installation installationWithMaxEquipments) {
         this.installationWithMaxEquipments = installationWithMaxEquipments;
+    }
+
+    public double getAverageEquipmentsPerInstallation() {
+        return averageEquipmentsPerInstallation;
+    }
+
+    public void setAverageEquipmentsPerInstallation(double averageEquipmentsPerInstallation) {
+        this.averageEquipmentsPerInstallation = averageEquipmentsPerInstallation;
     }
 }
