@@ -1,0 +1,36 @@
+package nosql.workshop.model.stats;
+
+import nosql.workshop.model.Installation;
+
+import java.util.List;
+
+public class InstallationsStats {
+
+    private long totalCount;
+    private List<CountByActivity> countByActivity;
+    private Installation installationWithMaxEquipments;
+
+    public long getTotalCount() {
+        return totalCount;
+    }
+
+    public void setTotalCount(long totalCount) {
+        this.totalCount = totalCount;
+    }
+
+    public List<CountByActivity> getCountByActivity() {
+        return countByActivity;
+    }
+
+    public void setCountByActivity(List<CountByActivity> countByActivity) {
+        this.countByActivity = countByActivity;
+    }
+
+    public Installation getInstallationWithMaxEquipments() {
+        return installationWithMaxEquipments;
+    }
+
+    public void setInstallationWithMaxEquipments(Installation installationWithMaxEquipments) {
+        this.installationWithMaxEquipments = installationWithMaxEquipments;
+    }
+}

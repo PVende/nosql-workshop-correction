@@ -2,6 +2,7 @@ package nosql.workshop.services;
 
 import com.google.inject.Inject;
 import nosql.workshop.model.Installation;
+import nosql.workshop.model.stats.CountByActivity;
 import org.jongo.MongoCollection;
 import org.jongo.MongoCursor;
 
@@ -82,5 +83,30 @@ public class InstallationService {
         return installations.count();
     }
 
+    /**
+     * Retourne l'installation avec le plus d'équipements.
+     *
+     * @return l'installation avec le plus d'équipements.
+     */
+    public Installation installationWithMaxEquipments() {
+        return installations.aggregate("{$project:{nbEquipements:{$size:'$equipements'}, nom: 1}}")
+                .and("{$sort: {nbEquipements:-1}}")
+                .and("{$limit: 1}")
+                .as(Installation.class)
+                .get(0);
+    }
 
+    /**
+     * Compte le nombre d'installations par activité.
+     *
+     * @return le nombre d'installations par activité.
+     */
+    public List<CountByActivity> countByActivity() {
+        return installations.aggregate("{$unwind: '$equipements'}")
+                .and("{$unwind: '$equipements.activites'}")
+                .and("{$group: {_id : '$equipements.activites', total : {$sum : 1}}}")
+                .and("{$project: {_id: 0, activite : '$_id', total : 1}}")
+                .and("{$sort: {total : -1}}")
+                .as(CountByActivity.class);
+    }
 }
