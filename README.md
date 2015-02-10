@@ -2,22 +2,6 @@
 
 *Découverte de [MongoDB](http://www.mongodb.org/) et d'[Elasticsearch](http://www.elasticsearch.org/), par la pratique !*
 
-Au programme :
-
-* [Prise en main de MongoDB](#prise-en-main-de-mongodb)
-    * [Installation](#installation)
-    * [Prise en main du shell](#prise-en-main-du-shell)
-    * [Opérations de base](#opérations-de-base)
-        * [Insertion d'un document](#insertion-dun-document)
-        * [Mise à jour d'un document](#mise-à-jour-dun-document)
-* [Prise en main d'Elasticsearch](#prise-en-main-delasticsearch)
-* [Application Java](#application-java)
-    * [Import des données dans MongoDB](#import-des-données-dans-mongodb)
-    * [Services Java](#services-java)
-    * [Import des données dans Elasticsearch](#import-des-données-dans-elasticsearch)
-    * [Recherche full-text](#recherche-full-text)
-    * [Recherche géographique](#recherche-géographique)
-* [Solutions](#solutions)
 
 ## Prise en main de MongoDB
 
@@ -79,6 +63,12 @@ MongoDB shell version: 2.6.6
 connecting to: test
 ```
 
+Le shell met à disposition un objet Javascript `db` qui permet d'interagir avec la base de données. Par exemple pour obtenir de l'aide :
+
+```javascript
+db.help()
+```
+
 Pour visualiser les bases disponibles :
 
 ```
@@ -91,46 +81,140 @@ Pour changer de base de données, par exemple `workshop` (MongoDB crée automati
 use workshop
 ```
 
-Le shell met à disposition un objet Javascript `db` qui permet d'interagir avec la base de données. Par exemple pour obtenir de l'aide :
-
-```javascript
-db.help()
-```
-
-Pour voir les collections d'une base de données :
-
-```
-show collections
-```
-
-Pour accéder à une collection nommée `geeks`, et par exemple afficher ses statistiques :
-
-```javascript
-db.geeks.stats()
-```
-
-### Opérations de base
-
-#### Insertion d'un document
-
-L'insertion d'un document se fait via la méthode `insert()`. Par exemple, pour insérer un document dans la collection `personnes` :
+Pour insérer un document dans une collection (la collection est créée automatiquement si elle n'existe pas encore) :
 
 ```javascript
 db.personnes.insert({ "prenom" : "Jean", "nom" : "DUPONT" })
 ```
 
-Remarque : la collection est créée automatiquement si elle n'existe pas encore.
+Pour afficher un document :
 
-**Exercice** :
+```javascript
+db.personnes.findOne()
+```
 
-Insérez un "Geek" dans une collection nommée `geeks`, avec les attributs suivants :
+MongoDB génère automtiquement un identifiant unique pour chaque document, dans l'attribut `_id`. Cet identifiant peut être défini manuellement :
 
-* nom : Dorne
-* prénom : Manuel
-* âge : 32
+```javascript
+db.personnes.insert({ "_id" : "jdupont", "prenom" : "Jean", "nom" : "DUPONT" })
+```
 
-#### Mise à jour d'un document
+Pour voir la liste des collections d'une base de données :
 
+```
+show collections
+```
+
+### Opérations CRUD
+
+### Recherche : find()
+
+La méthode `find()` possède deux paramètres (optionnels) :
+
+* le critère de recherche
+* la projection (les attributs à retourner)
+
+Par exemple, pour rechercher toutes les personnes se nommant "DUPONT" :
+
+```javascript
+db.personnes.find({ "nom" : "DUPONT" })
+```
+
+Si vous ne souhaitez retourner que les noms et prénoms, sans l'identifiant :
+
+```javascript
+db.personnes.find({ "nom" : "DUPONT" }, {"_id" : 0, "nom" : 1, "prenom" : 1})
+```
+
+Il est également possible de renommer un attribut dans la projection. Par exemple pour renomme le "nom" en "nom_de_famille" :
+
+```javascript
+db.personnes.find({ "nom" : "DUPONT" }, {"_id" : 0, "nom_de_famille" : "$nom", "prenom" : 1})
+```
+
+#### Insertion : insert()
+
+L'insertion d'un document se fait via la méthode `insert()`, comme vu précédemment lors de la prise en main du Shell.
+
+Le Shell étant un interpréteur Javascript, il est possible d'insérer plusieurs documents à l'aide d'une boucle `for` :
+
+```javascript
+for (var i = 1 ; i <= 100 ; i++) {
+    db.personnes.insert({ "prenom" : "Prenom" + i, "nom" : "Nom" + i, "age" : (Math.floor(Math.random() * 50) + 20) })
+}
+```
+
+#### Mise à jour
+
+La mise à jour de documents se fait via la méthode `update()`, qui possède plusieurs paramètres :
+
+* le filtre permettant de sélectionner les documents à mettre à jour
+* la requête de mise à jour
+* des options (par exemple : `{"multi" : true}` pour mettre à jour tous les documents correspondant au filtre)
+
+Par exemple, pour répartir les personnes dans deux catégories ("Master" pour les plus de 40 ans, "Junior pour les autres") :
+
+```javascript
+db.personnes.update({"age" : { "$gte" : 40 }}, {"$set" : {"categorie" : "Master"}}, {"multi" : true})
+db.personnes.update({"age" : { "$lt" : 40 }}, {"$set" : {"categorie" : "Junior"}}, {"multi" : true})
+```
+
+Remarque : MongoDB a créé automatiquement l'attribut "categorie" qui n'existait pas auparavant !
+
+#### Suppression
+
+La méthode `remove()` permet de supprimer des documents étant donné un filtre :
+
+```javascript
+db.personnes.remove({ "nom" : "DUPONT" })
+```
+
+Pour supprimer une collection :
+
+```javascript
+db.personnes.drop()
+```
+
+### Tableaux
+
+Il est possible d'utiliser des tableaux dans les documents. Par exemple, on peut socker les compétences des personnes de la manière suivante :
+
+```javascript
+{
+    "_id": "jdupont",
+    "prenom": "Jean",
+    "nom": "DUPONT",
+    "competences" : [
+        "Java",
+        "Javascript",
+        "HTML"
+    ]
+}
+```
+
+Pour rechercher les personnes possédant la compétence "Java" :
+
+```javascript
+db.personnes.find({ "competences" : "Java" })
+```
+
+Pour ajouter une compétence :
+
+```javascript
+db.personnes.update({ "_id" : "jdupont" }, {"$push" : {"competences" : "CSS"}})
+```
+
+Pour éviter les doublons :
+
+```javascript
+db.personnes.update({ "_id" : "jdupont" }, {"$addToSet" : {"competences" : "CSS"}})
+```
+
+Pour enlever une compétence :
+
+```javascript
+db.personnes.update({ "_id" : "jdupont" }, {"$pull" : {"competences" : "CSS"}})
+```
 
 ## Prise en main d'Elasticsearch
 
@@ -161,13 +245,3 @@ TODO
 ### Recherche géographique
 
 TODO
-
-## Solutions
-
-### MongoDB - opérations de base
-
-### Insertion d'un document
-
-```javascript
-db.geeks.insert({ "prenom" : "Manuel", "nom" : "Dorne", age : 32 })
-```
