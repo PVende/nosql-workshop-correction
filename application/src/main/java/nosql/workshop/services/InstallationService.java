@@ -118,4 +118,23 @@ public class InstallationService {
                 .get(0)
                 .getAverage();
     }
+
+    /**
+     * Recherche des installations sportives.
+     *
+     * @param searchQuery la requête de recherche.
+     * @return les résultats correspondant à la requête.
+     */
+    public List<Installation> search(String searchQuery) {
+        MongoCursor<Installation> cursor = installations.find("{$text: {$search: #, $language : 'french'}}", searchQuery)
+                .projection("{score: {$meta: 'textScore'}}")
+                .sort("{score: {$meta: 'textScore'}}")
+                .limit(10)
+                .as(Installation.class);
+
+        List<Installation> result = new ArrayList<>();
+        cursor.forEach(result::add);
+
+        return result;
+    }
 }

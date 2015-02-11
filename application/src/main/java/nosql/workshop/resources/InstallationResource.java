@@ -70,6 +70,11 @@ public class InstallationResource {
         return installationService.random();
     }
 
+    @Get("/search")
+    public List<Installation> search(Context context) {
+        String searchQuery = context.query().get("query");
+        return installationService.search(searchQuery);
+    }
 
     @Get("/stats")
     public InstallationsStats stats() {

@@ -2,6 +2,14 @@ body {
     padding-top: 50px;
 }
 
+#search-form {
+    margin-bottom: 20px;
+}
+
+#search-form input {
+    margin-right: 10px;
+}
+
 .glyphicon-refresh-animate {
     -animation: spin .7s infinite linear;
     -webkit-animation: spin2 .7s infinite linear;

@@ -4,9 +4,65 @@ title: Rechercher une installation sportive
 ---
 <h1>[[title]]</h1>
 
-<form class="form-inline">
-    <input id="search-input" type="text" class="form-control" placeholder="Votre recherche ...">
-    <button id="search-submit" type="submit" class="btn btn-default">Go !</button>
-</form>
+<div id="search-box"></div>
 
-<p>TODO ! (work in progress ...)</p>
+<script type="text/jsx">
+    var SearchForm = React.createClass({
+        handleSubmit: function (e) {
+            e.preventDefault();
+            var query = this.refs.query.getDOMNode().value.trim();
+            if (!query) {
+                return;
+            }
+            this.props.onSearchSubmit({query: query});
+        },
+        render: function () {
+            return (
+                    <form id="search-form" className="form-inline" onSubmit={this.handleSubmit}>
+                        <input id="search-input" type="text" className="form-control" placeholder="Votre recherche ..." ref="query" required="true"/>
+                        <button id="search-submit" type="submit" className="btn btn-primary">Go !</button>
+                    </form>
+            );
+        }
+    });
+
+    var SearchBox = React.createClass({
+        getInitialState: function () {
+            return {};
+        },
+        handleSearchSubmit: function (queryForm) {
+            var url = '/api/installations/search?query=' + queryForm.query;
+            $.ajax({
+                url: url,
+                dataType: 'json',
+                success: function (installations) {
+                    this.setState({data: installations});
+                }.bind(this),
+                error: function (xhr, status, err) {
+                    console.error(url, status, err.toString());
+                }.bind(this)
+            });
+        },
+        render: function () {
+            var installations = [];
+            if (this.state.data) {
+                installations = this.state.data.map(function (installation) {
+                    return (
+                            <Installation data={installation} />
+                    );
+                });
+            }
+            return (
+                    <div>
+                        <SearchForm onSearchSubmit={this.handleSearchSubmit} />
+                        {installations}
+                    </div>
+            );
+        }
+    });
+
+    React.render(
+            <SearchBox />,
+            document.getElementById('search-box')
+    );
+</script>
