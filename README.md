@@ -288,7 +288,43 @@ TODO
 
 ### Recherche full-text
 
-TODO
+#### Avec MongoDB
+
+On peut par exemple positionner un index de type "text" sur le nom de l'installation et sa commune, en mettant un poids plus important pour la commune :
+
+```javascript
+db.installations.ensureIndex(
+    {
+        "nom" : "text",
+        "adresse.commune" : "text"
+    },
+    {
+        "weights" : {
+            "nom" : 3,
+            "adresse.commune" : 10
+        },
+        "default_language" : "french"
+    }
+)
+```
+
+Ensuite, on peut par exemple rechercher les "Ports" de la ville de "Carquefou", en triant par pertinance et en ne conservant que les 10 premiers résultats :
+
+```javascript
+db.installations.find(
+    {
+        "$text": {
+            "$search": "Port Carquefou",
+            "$language" : "french"
+        }
+    },
+    {
+        "score": {"$meta": "textScore"}
+    }
+)
+.sort({"score": {"$meta": "textScore"}})
+.limit(10)
+```
 
 ### Recherche géographique
 
