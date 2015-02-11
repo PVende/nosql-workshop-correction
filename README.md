@@ -326,7 +326,37 @@ db.installations.find(
 .limit(10)
 ```
 
+#### Avec Elasticsearch
+
+TODO
+
+
 ### Recherche géographique
+
+#### Avec MongoDB
+
+Tout d'abord, il faut positionner un index géographique de type `2dsphere` sur l'attribut "location" de la collection des installations :
+
+```javascript
+db.installations.ensureIndex( { "location" : "2dsphere" } )
+```
+
+Ensuite, si l'on souhaite rechercher les installations sportives autour de Carquefou (lat = 47.3, lon = -1.5), dans un rayon de 5km :
+
+```javascript
+db.installations.find({ "location" : 
+    { $near :
+        { $geometry :
+            { type : "Point" ,
+              coordinates : [ -1.5 , 47.3 ]
+            },
+            $maxDistance : 5000
+        }
+    }
+})
+```
+
+#### Avec Elasticsearch
 
 TODO
 
