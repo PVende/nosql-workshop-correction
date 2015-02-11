@@ -30,8 +30,42 @@ title: Installations sportives des Pays de la Loire
 <div id="random-installation"></div>
 
 <script type="text/jsx">
+    var RandomInstallation = React.createClass({
+        getInitialState: function () {
+            return {};
+        },
+        componentDidMount: function () {
+            var url = '/api/installations/random';
+            $.ajax({
+                url: url,
+                dataType: 'json',
+                success: function (data) {
+                    this.setState({data: data});
+                }.bind(this),
+                error: function (xhr, status, err) {
+                    console.error(url, status, err.toString());
+                }.bind(this)
+            });
+        },
+        render: function () {
+            var Glyphicon = ReactBootstrap.Glyphicon;
+            if (!this.state.data) {
+                return (
+                        <div>
+                            <Glyphicon glyph="refresh" className="glyphicon-refresh-animate" />
+                        </div>
+                );
+            }
+            else {
+                return (
+                        <Installation data={this.state.data} />
+                )
+            }
+        }
+    });
+
     React.render(
-            <Installation url="/api/installations/random" />,
+            <RandomInstallation />,
             document.getElementById('random-installation')
     );
 </script>

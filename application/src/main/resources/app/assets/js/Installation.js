@@ -1,83 +1,59 @@
 var Installation = React.createClass({
-    getInitialState: function () {
-        return {};
-    },
-    componentDidMount: function () {
-        $.ajax({
-            url: this.props.url,
-            dataType: 'json',
-            success: function (data) {
-                this.setState({data: data});
-            }.bind(this),
-            error: function (xhr, status, err) {
-                console.error(this.props.url, status, err.toString());
-            }.bind(this)
-        });
-    },
     render: function () {
         var Glyphicon = ReactBootstrap.Glyphicon;
-        if (!this.state.data) {
+        var equipements = this.props.data.equipements.map(function (equipement) {
+            var activites = '';
+            if (equipement.activites) {
+                activites = equipement.activites.join(' ; ');
+            }
             return (
-                <div>
-                    <Glyphicon glyph="refresh" className="glyphicon-refresh-animate" />
-                </div>
+                <tr>
+                    <td>{equipement.numero}</td>
+                    <td>{equipement.nom}</td>
+                    <td>{equipement.type}</td>
+                    <td>{equipement.famille}</td>
+                    <td>{activites}</td>
+                </tr>
             );
-        }
-        else {
-            var equipements = this.state.data.equipements.map(function (equipement) {
-                var activites = '';
-                if (equipement.activites) {
-                    activites = equipement.activites.join(' ; ');
-                }
-                return (
-                    <tr>
-                        <td>{equipement.numero}</td>
-                        <td>{equipement.nom}</td>
-                        <td>{equipement.type}</td>
-                        <td>{equipement.famille}</td>
-                        <td>{activites}</td>
-                    </tr>
-                );
-            });
-            return (
-                <div className="panel panel-primary">
-                    <div className="panel-heading">
-                        <h3 className="panel-title">{'\u0023 ' + this.state.data._id + ' - ' + this.state.data.nom}</h3>
-                    </div>
-                    <div className="panel-body">
-                        <p>
-                            <Glyphicon glyph="envelope" />
-                        {'\u00A0' + this.state.data.adresse.numero + ' ' + this.state.data.adresse.voie + ' ' + this.state.data.adresse.codePostal + ' ' + this.state.data.adresse.commune}
-                        </p>
-                        <p>
-                            <Glyphicon glyph="map-marker" />
-                        {'\u00A0 lat : ' + this.state.data.location.coordinates[0] + ' ; lon : ' + this.state.data.location.coordinates[1]}
-                        </p>
-                        <p>
-                            <Glyphicon glyph="road" />
-                        {'\u00A0' + this.state.data.nbPlacesParking + ' place(s) de parking'}
-                        </p>
-                        <hr/>
-                        <p>
-                            <b>Equipements</b>
-                        </p>
-                        <table className="table table-condensed">
-                            <thead>
-                                <tr>
-                                    <th>{'\u0023'}</th>
-                                    <th>Nom</th>
-                                    <th>Type</th>
-                                    <th>Famille</th>
-                                    <th>Activités</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+        });
+        return (
+            <div className="panel panel-primary">
+                <div className="panel-heading">
+                    <h3 className="panel-title">{'\u0023 ' + this.props.data._id + ' - ' + this.props.data.nom}</h3>
+                </div>
+                <div className="panel-body">
+                    <p>
+                        <Glyphicon glyph="envelope" />
+                        {'\u00A0' + this.props.data.adresse.numero + ' ' + this.props.data.adresse.voie + ' ' + this.props.data.adresse.codePostal + ' ' + this.props.data.adresse.commune}
+                    </p>
+                    <p>
+                        <Glyphicon glyph="map-marker" />
+                        {'\u00A0 lat : ' + this.props.data.location.coordinates[0] + ' ; lon : ' + this.props.data.location.coordinates[1]}
+                    </p>
+                    <p>
+                        <Glyphicon glyph="road" />
+                        {'\u00A0' + this.props.data.nbPlacesParking + ' place(s) de parking'}
+                    </p>
+                    <hr/>
+                    <p>
+                        <b>Equipements</b>
+                    </p>
+                    <table className="table table-condensed">
+                        <thead>
+                            <tr>
+                                <th>{'\u0023'}</th>
+                                <th>Nom</th>
+                                <th>Type</th>
+                                <th>Famille</th>
+                                <th>Activités</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                             {equipements}
-                            </tbody>
-                        </table>
-                    </div>
+                        </tbody>
+                    </table>
                 </div>
-            );
-        }
+            </div>
+        );
     }
 });
