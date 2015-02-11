@@ -137,4 +137,24 @@ public class InstallationService {
 
         return result;
     }
+
+    /**
+     * Recherche des installations sportives par proximité géographique.
+     *
+     * @param lat      latitude du point de départ.
+     * @param lng      longitude du point de départ.
+     * @param distance rayon de recherche.
+     * @return les installations dans la zone géographique demandée.
+     */
+    public List<Installation> geosearch(double lat, double lng, double distance) {
+        MongoCursor<Installation> cursor = installations.find(
+                "{location: {$near: {$geometry: {type : 'Point' , coordinates : [ # , # ]}, $maxDistance : #}}}",
+                lng, lat, distance)
+                .as(Installation.class);
+
+        List<Installation> result = new ArrayList<>();
+        cursor.forEach(result::add);
+
+        return result;
+    }
 }

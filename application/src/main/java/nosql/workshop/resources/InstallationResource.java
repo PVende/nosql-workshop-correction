@@ -76,6 +76,15 @@ public class InstallationResource {
         return installationService.search(searchQuery);
     }
 
+    @Get("/geosearch")
+    public List<Installation> geosearch(Context context) {
+        Query query = context.query();
+        double lat = query.getDouble("lat");
+        double lng = query.getDouble("lng");
+        double distance = query.getDouble("distance");
+        return installationService.geosearch(lat, lng, distance);
+    }
+
     @Get("/stats")
     public InstallationsStats stats() {
         InstallationsStats stats = new InstallationsStats();
