@@ -23,4 +23,9 @@ public class TownRessource {
     public List<TownSuggest> suggest(String text) {
         return searchService.suggestTownName(text);
     }
+
+    @Get("location/:townName")
+    public Double[] getLocation(String townName){
+        return searchService.getTownLocation(townName);
+    }
 }

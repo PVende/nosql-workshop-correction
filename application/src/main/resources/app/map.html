@@ -16,9 +16,8 @@ title: Carte des installations sportives
 
 <script>
     var map;
-    function initialize() {
-        var lat = 47.3;
-        var lng = -1.5;
+
+    function setPosition(lat, lng) {
         var distance = 3000;
 
         var mapOptions = {
@@ -48,6 +47,12 @@ title: Carte des installations sportives
         });
     }
 
+    function initialize() {
+        var lat = 47.3;
+        var lng = -1.5;
+        setPosition.call(this, lat, lng);
+    }
+
     google.maps.event.addDomListener(window, 'load', initialize);
 
 </script>
@@ -60,10 +65,25 @@ title: Carte des installations sportives
         handleSubmit: function (e) {
             e.preventDefault();
             var query = this.refs.query.getDOMNode().value.trim();
+
+            console.log(query);
+
             if (!query) {
                 return;
             }
-            this.props.onSearchSubmit({query: query});
+
+            $.ajax({
+                    url: "/api/towns/location/"+query,
+                    success: function(location){
+                        console.log(location);
+                        if(location && location.length > 0){
+                            setPosition(location[1], location[0]);
+                        }
+                    },
+                    error: function (xhr, status, err) {
+                        console.error(url, status, err.toString());
+                    }
+            });
         },
 
         componentDidMount: function(){
@@ -72,6 +92,7 @@ title: Carte des installations sportives
             $(element).typeahead(
                     null,
                     {
+                        displayKey : "townName",
                         source: function(query, cb){
                                 return $.ajax({
                                     url: "/api/towns/suggest/"+query,

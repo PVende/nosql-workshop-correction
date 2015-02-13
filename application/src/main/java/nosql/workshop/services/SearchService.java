@@ -13,6 +13,8 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHitField;
+import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.suggest.completion.CompletionSuggestion;
 import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
 
@@ -91,4 +93,20 @@ public class SearchService {
                 .collect(Collectors.toList());
     }
 
+    public Double[] getTownLocation(String townName) {
+        SearchResponse searchResponse = elasticSearchClient.prepareSearch(TOWNS_INDEX)
+                .setTypes(TOWN_TYPE)
+                .setQuery(QueryBuilders.boolQuery().must(QueryBuilders.matchQuery("townName", townName)))
+                .execute()
+                .actionGet();
+
+
+        SearchHits hits = searchResponse.getHits();
+        if(hits.getTotalHits() == 0){
+            return new Double[0];
+        }
+        List<Double> location = (List<Double>) hits.getAt(0).getSource().get("location");
+
+        return location.toArray(new Double[location.size()]);
+    }
 }

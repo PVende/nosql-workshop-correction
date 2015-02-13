@@ -6,23 +6,23 @@ import java.util.List;
  * Created by Chris on 13/02/15.
  */
 public class TownSuggest {
-    private String value;
+    private String townName;
     private Double[] location;
 
     private TownSuggest() {
     }
 
     public TownSuggest(String value, List<Double> location) {
-        this.value = value;
+        this.townName = value;
         this.location = location.toArray(new Double[location.size()]);
     }
 
-    public String getValue() {
-        return value;
+    public String getTownName() {
+        return townName;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setTownName(String townName) {
+        this.townName = townName;
     }
 
     public Double[] getLocation() {

@@ -48,6 +48,8 @@ public class ImportTowns {
             String[] split = line.split(",");
 
             String townName = split[1].replaceAll("\"", "");
+            Double longitude = Double.valueOf(split[6]);
+            Double latitude = Double.valueOf(split[7]);
             XContentBuilder sourceBuilder = jsonBuilder().
                     startObject()
                         .field("townName", townName)
@@ -55,16 +57,17 @@ public class ImportTowns {
                             .field("input", townName.toLowerCase())
                             .field("output", townName.toLowerCase())
                             .startObject("payload")
+                                .field("postCode")
                                 .startArray("location")
-                                    .value(Double.valueOf(split[6]))
-                                    .value(Double.valueOf(split[7]))
+                                    .value(longitude)
+                                    .value(latitude)
                                 .endArray()
                             .endObject()
                         .endObject()
                         .field("postCode", split[3].replaceAll("\"", ""))
                         .startArray("location")
-                            .value(Double.valueOf(split[6]))
-                            .value(Double.valueOf(split[7]))
+                            .value(longitude)
+                            .value(latitude)
                         .endArray().endObject();
 
             bulkRequest.add(
