@@ -1,0 +1,63 @@
+curl -XPUT localhost:9200/installations -d '{
+    "index" : {
+        "analysis" : {
+            "analyzer" : {
+                "default" : {
+                    "type" : "french"
+                }
+            }
+        }
+    },
+    "mappings" : {
+    	"installation" : {
+		    "properties" : {
+                "location.coordinates" : {"type" : "geo_point"}
+			}
+		}
+    }
+}
+
+curl -XPOST localhost:9200/installations -d '{
+    "mappings" : {
+    	"installation" : {
+		    "properties" : {
+                "townName" : {"type" : "string"},
+                "townNameSuggest" : {
+                    "type" : "completion",
+                    "payloads" : true
+                },
+                "postCode" : {"type" : "string"},
+				"location" : {"type" : "geo_point"}
+			}
+		}
+    }
+}'
+
+curl -XPOST localhost:9200/towns -d '{
+    "mappings" : {
+    	"town" : {
+		    "properties" : {
+                "townName" : {"type" : "string"},
+                "townNameSuggest" : {
+                    "type" : "completion",
+                    "payloads" : true
+                },
+                "postCode" : {"type" : "string"},
+				"location" : {"type" : "geo_point"}
+			}
+		}
+    }
+}'
+
+curl -XPOST localhost:9200/streets -d '{
+    "mappings" : {
+		"street" : {
+		    "properties" : {
+		        "streetName" : {"type" : "string"},
+                "townName" : {"type" : "string"},
+                "postCode" : {"type" : "string"},
+				"location" : {"type" : "geo_point"}
+			}
+		}
+    }
+}'

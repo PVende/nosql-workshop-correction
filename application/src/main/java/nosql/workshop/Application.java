@@ -2,6 +2,7 @@ package nosql.workshop;
 
 import net.codestory.http.WebServer;
 import net.codestory.http.injection.GuiceAdapter;
+import nosql.workshop.resources.TownRessource;
 import nosql.workshop.resources.InstallationResource;
 
 /**
@@ -14,6 +15,7 @@ public class Application {
         webServer.configure(routes -> {
                     routes.setIocAdapter(new GuiceAdapter(new ApplicationModule()));
                     routes.add("/api/installations", InstallationResource.class);
+                    routes.add("/api/towns", TownRessource.class);
                 }
         );
         webServer.start();

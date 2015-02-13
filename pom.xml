@@ -18,6 +18,7 @@
     <modules>
         <module>batch</module>
         <module>application</module>
+        <module>ima-data</module>
     </modules>
 
     <dependencyManagement>

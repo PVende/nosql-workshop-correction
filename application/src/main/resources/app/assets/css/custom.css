@@ -10,6 +10,19 @@ body {
     margin-right: 10px;
 }
 
+
+#search-city-form {
+    margin-bottom: 20px;
+}
+
+#search-city-form input {
+    margin-right: 10px;
+}
+
+#search-city-submit {
+    margin-top: 15px;
+}
+
 .glyphicon-refresh-animate {
     -animation: spin .7s infinite linear;
     -webkit-animation: spin2 .7s infinite linear;
