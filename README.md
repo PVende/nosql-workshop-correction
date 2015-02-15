@@ -584,7 +584,12 @@ Pour cela, recherchez les `TODO` dans le code du module `batch`, complétez le c
 
 ### Services Java
 
-TODO
+La seconde tâche consiste à implémenter les services Java utilisés par les pages web de l'application.
+
+Pour cela, recherchez les `TODO` dans le code du module `application` et complétez le code manquant.
+
+L'application web propose une page "API Checkup" permettant de vérifier que les services répondent correctement.
+
 
 ### Recherche full-text
 
