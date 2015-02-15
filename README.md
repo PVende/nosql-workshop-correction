@@ -231,9 +231,9 @@ Téléchargez la dernière version d'ElasticSaerch sur [download.elasticsearch.o
 
 Dézippez l'archive dans le dossier de votre choix, par exemple `$HOME/progz/elasticsearch-1.4.3`.
 
-ElasticSearch étant basé sur le langage Java, veillez à disposer de **Java 8** installé sur votre machine.
+ElasticSearch étant basé sur le langage Java, veillez à disposer de **Java 8** installé sur votre machine. Vous pouvez vérifier l'installation de Java à l'aide de la commande `java -version`.
 
-Les exécutables nécessaires au fonctionnement d'ElasticSearch se trouvent dans le dossier `$HOME/progz/elasticsearch-1.4.3/bin`. `elasticsearch` permet de lancer le server et `plugin` permet d'installer des plugins.
+Les exécutables nécessaires au fonctionnement d'ElasticSearch se trouvent dans le dossier `$HOME/progz/elasticsearch-1.4.3/bin`. **elasticsearch** permet de lancer le server et **plugin** permet d'installer des plugins.
 
 Avant de démarrer, installez les plugins suivants :
 
@@ -246,14 +246,14 @@ Avant de démarrer, installez les plugins suivants :
 	plugin -i elasticsearch/marvel/latest
 ```
 
-Vous pouvez à présent démarrer le serveur.
-```javascript
-	elasticsearch
-```
-
 Le fichier `$HOME/progz/elasticsearch-1.4.3/config/elasticsearch.yml`, au format [YAML](http://fr.wikipedia.org/wiki/YAML) permet de configurer ElasticSearch, activez (décommentez) l'option suivante. Pour le reste, la configuration par défaut nous suffit pour l'instant.
 ```javascript
 	discovery.zen.ping.multicast.enabled: false
+```
+
+Vous pouvez à présent démarrer le serveur.
+```javascript
+	elasticsearch
 ```
 
 Il est possible d'ajouter des options Java pour augmenter la mémoire allouée à ElasticSearch en passant directement les paramètres de la JVM à l'exécutable ElsasticSearch.
@@ -297,7 +297,7 @@ Un document est un élément unitaire, au format JSON, stocké dans ElasticSearc
 Un noeud est une instance d'ElasticSearch, une noeud appartien à un **cluster**.
 
 #### Cluster
-Un cluster est composé d'un ou plusieurs **noeuds** ElasticSearch qui sont connectés entre eux et partagent le même nom. Un cluster comporte un noeud maître unique (**master node**). En cas de défaillance du master node, un nouveau master node est élu parmis les noeuds restants.
+Un cluster est composé d'un ou plusieurs **noeuds** ElasticSearch qui sont connectés entre eux et qui partagent le même nom. Un cluster comporte un noeud maître unique (**master node**). En cas de défaillance du master node, un nouveau master node est élu parmis les noeuds restants.
 
 #### Index
 Un index est un regroupement logique d'un ensemble de documents. Un index est composé de **shards**. Tous les documents appartienent à un index.
@@ -306,33 +306,40 @@ Un index est un regroupement logique d'un ensemble de documents. Un index est co
 Un type est un sous-ensemble d'un index qui permet de regrouper des documents. De la même manière que pour les index, les types permettent de configurer le stockage des documents. Tout document appartient à un type.
 
 #### Shard
-Un shard est un fragment d'un index. Ce sont les shards qui permettent de partitionner les index sur plusieurs noeuds. Ainsi, un index peut être partitionner sur autant de noeud que cet index comporte de shards. Le nombre de shards par défaut est de **5**.
+Un shard est un fragment d'un index. Ce sont les shards qui permettent de partitionner les index sur plusieurs noeuds. Ainsi, un index peut être partitionner sur autant de noeuds que cet index comporte de shards. Le nombre de shards par défaut est de **5**.
 
 #### Réplique
-Une réplique est une copie intégrale d'un index. Les répliques permettent d'augment la tolérance à la panne du système ainsi que la durabilité des données. Une réplique comporte autant de shards que l'index original. Le nombre de répliques par défaut est de **1**.
+Une réplique est une copie intégrale d'un index. Les répliques permettent d'augmenter la tolérance à la panne du système ainsi que la durabilité des données. Une réplique comporte autant de shards que l'index original. Le nombre de répliques par défaut est de **1**.
 
 ### Prise en main de l'API
 
 ElasticSearch expose l'ensemble de ses APIs à l'aide d'un API [REST](http://www.pompage.net/traduction/comment-j-ai-explique-rest-a-ma-femme), il est donc possible d'utiliser n'importe quel client HTTP pour manipuler ElasticSearch.
 
 Le plugin **Marvel** que nous avons installé plus tôt propose parmis ces outils, le client **Sense** qui offre des fonctionnalités qui facilitent l'utilisation d'ElasticSearch. 
-```javascript
+
 	http://localhost:9200/_plugin/marvel/sense/index.html
-```
 
 Votre client préféré, si vous en avez un, fera sans problèmes l'affaire :D.
 
 #### Les convetions
 L'API d'ElasticSearch est composé d'un ensemble d'APIs qui exposent des opérations spécialisées. Cette API est conforme aux standards REST. Elle est orientée ressources, s'appuie sur les verbes HTTP, les codes de retours HTTP...
 
-Les APIs qui effectuent des opérations sur les index permettent généralement d'effectuer l'opération sur plusieurs index simultanément.
+D'une manière générale, les requêtes ressemblent à ça : 
 
-Par exemple, pour effectuer une requête sur les index index1 et index2, il est possible d'utiliser l'URL suivante :
-	/index1,index2/_search
+	http://[host]:[port]/index/type/_action|id
 
-Vous trouverez de nombreux exemples (inclusions, exclusions, jokers, ...) dnas le documentation.
+Par exemple :
 
-#TODO
+	localhost:9200/heroes/person/_search
+	localhost:9200/heroes/person/_count
+	localhost:9200/heroes/person/ironman
+
+
+Les actions sur les index permettent généralement d'effectuer l'opération sur plusieurs index simultanément. Par exemple, pour effectuer une requête sur les index index1 et index2, il est possible d'utiliser l'URL suivante :
+
+	localhost:9200//heroes,vilains/_search
+
+Vous trouverez de nombreux exemples (inclusions, exclusions, jokers, ...) dans la documentation.
 
 ### CRUD
 #### Insertion
@@ -346,7 +353,9 @@ Pour insérer un document, on utilise la requête suivante.
 ```
 
 Le verbe, **POST**, indique qu'on insert un document
-L'URL est construite de la manière suivante : **<host>:<port>/<index>/<type>/<id>**
+L'URL est construite de la manière suivante : 
+
+	<host>:<port>/<index>/<type>/<id>
 
 Si l'index n'existe pas au moment de la création du document, celui-ci est créé automatiquement.
 
@@ -364,7 +373,7 @@ La réponse renvoyée contient l'identifiant généré par ElasticSearch.
 
 ```javascript
 	{
-	   "_index": "crunchbase",
+	   "_index": "heroes",
 	   "_type": "person",
 	   "_id": "AUuFm0z0oSZRHss7_tP7",
 	   "_version": 1,
@@ -383,7 +392,7 @@ La réponse renvoyée est la suivante :
 
 ```javascript
 	{
-	   "_index": "crunchbase",
+	   "_index": "heroes",
 	   "_type": "person",
 	   "_id": "ironman",
 	   "_version": 11,
@@ -395,12 +404,12 @@ La réponse renvoyée est la suivante :
 	}
 ```
 
-L'attribut **found** indique que le document a bien été trouvé (*true* dans notre cas, *false* si le document n'a pas été trouvé). L'attribut **_source** contient le document extrait. 
+L'attribut `found` indique que le document a bien été trouvé (`true` dans notre cas, `false` si le document n'a pas été trouvé). L'attribut `_source` contient le document extrait. 
 
 #### Mise à jour
 Pour mettre à jour les données, il est possible d'utiliser les requêtes **PUT** et **POST** présentées ci-dessus. Cette méthode permet de mettre à jour l'ensemble du document.
 
-Il est possible d'effectuer des mises à jour partielles en utilisant l'API *_update*.
+Il est possible d'effectuer des mises à jour partielles en utilisant l'API `_update`.
 
 ```javascript
 	curl -XPOST 'localhost:9200/heroes/person/ironman/_update' -d '{
@@ -441,7 +450,7 @@ Commençons par insérer quelques données ...
 	curl -XPOST 'http://localhost:9200/heroes/person/thething' -d '{"firstName":"Ben","lastName":"Grimm","aka":"The Thing","team":"FantasticFour","age":42}'
 ```
 
-L'API *_search* permet d'effectuer des recherches dans ElasticSearch.
+L'API `_search` permet d'effectuer des recherches dans ElasticSearch.
 
 ### Recherche
 La requête suivante lance une recherche sur l'ensemble des documents de type `person` dans l'index `heroes` (par défault, une recherche remonte 10 résultats) : 
@@ -476,8 +485,8 @@ La requête suivante permet d'effectuer une recherche sur les documents dont le 
 
 Il est possible de faire des recherches à plusieurs niveaux :
  
-* sur un type : `localhost:9200/heroes/person/_search`
-* sur un index donné : `localhost:9200/heroes/_search`
+* sur un type et un index donnés : `localhost:9200/heroes/person/_search`
+* sur l'ensemble des types d'un index donné : `localhost:9200/heroes/_search`
 * sur l'ensemble des index d'un cluster : `localhost:9200/_search`
 
 ### Agrégations
@@ -522,7 +531,7 @@ Il est possible de faire des sous-agrégations. Obtenir la répartition des vale
 	}
 ```
 
-Il est possible de faire des calcules avec les aggrégations. L'age moyen des membres de chaque équipe : 
+Il est possible de faire des calculs avec les aggrégations. L'âge moyen des membres de chaque équipe : 
 
 ```javascript
 	curl -XPOST 'http://localhost:9200/heroes/person/_search' -d '{
@@ -680,8 +689,9 @@ On crée d'abord le mapping. Dans cette première version, nous nous contenteron
 
 #### Import des données dans Elasticsearch
 
-#TODO
+Le job **MongoDbToElasticsearch** a pour objectif de gérer la copie des données de MongoDB à ElasticSearch. Nous ne cherchons pas ici à gérer une mise à jour incrémentale des données. 
 
+Nous souhaitons extraire l'ensemble des données de la collection `installations` et les écrire dans l'index `installations` (type `installation`). Afin d'éviter pour le moment des problèmes de conversion de dates, nous filtrerons la propriété `dateMiseAJourFiche` avant l'insersion dans **ElasticSearch**.
 
 Une fois les documents indexés dans ElasticSearch, nous pouvons lancer recherche full text : 
 
