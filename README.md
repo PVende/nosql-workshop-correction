@@ -239,35 +239,35 @@ Avant de démarrer, installez les plugins suivants :
 
 * head (administration)
 ```javascript
-plugin -i mobz/elasticsearch-head
+	plugin -i mobz/elasticsearch-head
 ```
 * marvel (supervision & boite à outils)
 ```javascript
-plugin -i elasticsearch/marvel/latest
+	plugin -i elasticsearch/marvel/latest
 ```
 
 Vous pouvez à présent démarrer le serveur.
 ```javascript
-elasticsearch
+	elasticsearch
 ```
 
 Le fichier `$HOME/progz/elasticsearch-1.4.3/config/elasticsearch.yml`, au format [YAML](http://fr.wikipedia.org/wiki/YAML) permet de configurer ElasticSearch, activez (décommentez) l'option suivante. Pour le reste, la configuration par défaut nous suffit pour l'instant.
 ```javascript
-discovery.zen.ping.multicast.enabled: false
+	discovery.zen.ping.multicast.enabled: false
 ```
 
 Il est possible d'ajouter des options Java pour augmenter la mémoire allouée à ElasticSearch en passant directement les paramètres de la JVM à l'exécutable ElsasticSearch.
 ```javascript
-elasticsearch -Xmx=2G -Xms=2G
+	elasticsearch -Xmx=2G -Xms=2G
 ```
 
 Pour vérifier le démarrage de votre noeud ElasticSearch, 
 ```javascript
-http://localhost:9200/
+	http://localhost:9200/
 ```
 
 Vous devriez obtenir une réponse qui ressemble à celle là : 
-
+```javascript
 	{
 	  "status" : 200,
 	  "name" : "Spinnerette",
@@ -281,6 +281,7 @@ Vous devriez obtenir une réponse qui ressemble à celle là :
 	  },
 	  "tagline" : "You Know, for Search"
 	}
+```
 
 Pour accéder aux plugins précédemment installés il vous suffit de consulter les URLs suivantes : 
 
@@ -316,7 +317,7 @@ ElasticSearch expose l'ensemble de ses APIs à l'aide d'un API [REST](http://www
 
 Le plugin **Marvel** que nous avons installé plus tôt propose parmis ces outils, le client **Sense** qui offre des fonctionnalités qui facilitent l'utilisation d'ElasticSearch. 
 ```javascript
-http://localhost:9200/_plugin/marvel/sense/index.html
+	http://localhost:9200/_plugin/marvel/sense/index.html
 ```
 
 Votre client préféré, si vous en avez un, fera sans problèmes l'affaire :D.
@@ -337,10 +338,12 @@ Vous trouverez de nombreux exemples (inclusions, exclusions, jokers, ...) dnas l
 #### Insertion
 Pour insérer un document, on utilise la requête suivante.
 
-	curl -XPOST 'localhost:9200/crunchbase/person/1' -d '{
+```javascript
+	curl -XPOST 'localhost:9200/heroes/person/ironman' -d '{
 		"firstName" : "Tony",
 		"lastName" : "Stark"
 	}'
+```
 
 Le verbe, **POST**, indique qu'on insert un document
 L'URL est construite de la manière suivante : **<host>:<port>/<index>/<type>/<id>**
@@ -350,13 +353,16 @@ Si l'index n'existe pas au moment de la création du document, celui-ci est cré
 #### PUT vs POST
 Pour l'insertion de données, les verbes **POST** et **PUT** sont équivalents. Le verbe **POST** permet d'insérer des documents sans spéficier l'identifiant du document.
 
-	curl -XPOST 'localhost:9200/crunchbase/person/' -d '{
+```javascript
+	curl -XPOST 'localhost:9200/heroes/person/' -d '{
 		"firstName" : "Charles",
 		"lastName" : "Xavier"
 	}'
+```
 
 La réponse renvoyée contient l'identifiant généré par ElasticSearch.
 
+```javascript
 	{
 	   "_index": "crunchbase",
 	   "_type": "person",
@@ -364,18 +370,22 @@ La réponse renvoyée contient l'identifiant généré par ElasticSearch.
 	   "_version": 1,
 	   "created": true
 	}
+```
 
 #### Extraction
 Pour extraire un document à l'aide de son identifiant, on utilise la requête suivante. 
 
-	curl -XGET 'localhost:9200/crunchbase/person/1'
+```javascript
+	curl -XGET 'localhost:9200/heroes/person/ironman'
+```
 
 La réponse renvoyée est la suivante : 
 
+```javascript
 	{
 	   "_index": "crunchbase",
 	   "_type": "person",
-	   "_id": "1",
+	   "_id": "ironman",
 	   "_version": 11,
 	   "found": true,
 	   "_source": {
@@ -383,6 +393,7 @@ La réponse renvoyée est la suivante :
 	      "lastName": "Stark"
 	   }
 	}
+```
 
 L'attribut **found** indique que le document a bien été trouvé (*true* dans notre cas, *false* si le document n'a pas été trouvé). L'attribut **_source** contient le document extrait. 
 
@@ -390,21 +401,24 @@ L'attribut **found** indique que le document a bien été trouvé (*true* dans n
 Pour mettre à jour les données, il est possible d'utiliser les requêtes **PUT** et **POST** présentées ci-dessus. Cette méthode permet de mettre à jour l'ensemble du document.
 
 Il est possible d'effectuer des mises à jour partielles en utilisant l'API *_update*.
-	curl -XPOST 'localhost:9200/crunchbase/person/1/_update' -d '{
+
+```javascript
+	curl -XPOST 'localhost:9200/heroes/person/ironman/_update' -d '{
 		"doc" : {
 			"firstName" : "Tomy"
 		}
 	}'
+```
 
 #### Suppression
 Pour supprimer un document, on utilise le verbe **DELETE**
 
-	curl -XDELETE 'localhost:9200/crunchbase/person/1'
+	curl -XDELETE 'localhost:9200/heroes/person/ironman'
 
 ### Exists
 Il est possible, à l'aide du verbe **HEAD** de vérifier l'existance d'un document.
 
-	curl -XHEAD 'localhost:9200/crunchbase/person/1'
+	curl -XHEAD 'localhost:9200/heroes/person/ironman'
 
 Les statut renvoyé : 
 
@@ -415,6 +429,7 @@ Les statut renvoyé :
 ## API de Recherche
 Commençons par insérer quelques données ...
 	
+```javascript
 	curl -XPOST 'http://localhost:9200/heroes/person/ironman' -d '{"firstName":"Tony","lastName":"Stark","aka":"Iron Man","team":"Avengers","age":45}'
 	curl -XPOST 'http://localhost:9200/heroes/person/thor' -d '{"firstName":"Thor","lastName":"Odinson","aka":"Thor","team":"Avengers","age":27}'
 	curl -XPOST 'http://localhost:9200/heroes/person/antman' -d '{"firstName":"Hank","lastName":"Pym","aka":"Ant-Man","team":"Avengers","age":41}'
@@ -424,14 +439,18 @@ Commençons par insérer quelques données ...
 	curl -XPOST 'http://localhost:9200/heroes/person/invisiblewoman' -d '{"firstName":"Susan","lastName":"Storm","aka":"Invisible Woman","team":"FantasticFour","age":29}'
 	curl -XPOST 'http://localhost:9200/heroes/person/thehumantorch' -d '{"firstName":"Johnny","lastName":"Storm","aka":"The Human Torch","team":"FantasticFour","age":27}'
 	curl -XPOST 'http://localhost:9200/heroes/person/thething' -d '{"firstName":"Ben","lastName":"Grimm","aka":"The Thing","team":"FantasticFour","age":42}'
+```
 
 L'API *_search* permet d'effectuer des recherches dans ElasticSearch.
 
 ### Recherche
 La requête suivante lance une recherche sur l'ensemble des documents de type `person` dans l'index `heroes` (par défault, une recherche remonte 10 résultats) : 
+
 	curl -XPOST 'http://localhost:9200/heroes/person/_search'
 
 La requête suivante permet de rechercher tous ls documents qui ont un attribut `lastName` dont la valeur est `storm` : 
+
+```javascript
 	curl -XPOST 'http://localhost:9200/heroes/person/_search' -d '{
 	    "query": {
 	        "match": {
@@ -439,9 +458,11 @@ La requête suivante permet de rechercher tous ls documents qui ont un attribut 
 	        }
 	    }
 	}'
+```
 
 La requête suivante permet d'effectuer une recherche sur les documents dont le prénom commence par un `t` : 
 
+```javascript
 	curl -XPOST 'http://localhost:9200/heroes/person/_search' -d '{
 	    "query": {
 	        "wildcard": {
@@ -451,12 +472,12 @@ La requête suivante permet d'effectuer une recherche sur les documents dont le 
 	        }
 	    }
 	}
-
+```
 
 Il est possible de faire des recherches à plusieurs niveaux :
  
-* sur un type : `localhost:9200/crunchbase/person/_search`
-* sur un index donné : `localhost:9200/crunchbase/_search`
+* sur un type : `localhost:9200/heroes/person/_search`
+* sur un index donné : `localhost:9200/heroes/_search`
 * sur l'ensemble des index d'un cluster : `localhost:9200/_search`
 
 ### Agrégations
@@ -466,6 +487,7 @@ Bien qu'il soit possible de combiner recherche et aggrégations, nous ne nous in
 
 Obtenir la répartition des valeurs du terme `team` dans les documents de type `person` de l'index `heroes` : 
 
+```javascript
 	curl -XPOST 'http://localhost:9200/heroes/person/_search' -d '{
 	    "size": 0,
 	    "aggs" : {
@@ -476,10 +498,11 @@ Obtenir la répartition des valeurs du terme `team` dans les documents de type `
 	        }
 	    }
 	}
-
+```
 
 Il est possible de faire des sous-agrégations. Obtenir la répartition des valeurs du terme `lastName` dans la répartion du terme `team` dans les documents de type `person` de l'index `heroes` : 
 
+```javascript
 	curl -XPOST 'http://localhost:9200/heroes/person/_search' -d '{
 	    "size": 0,
 	    "aggs" : {
@@ -497,9 +520,11 @@ Il est possible de faire des sous-agrégations. Obtenir la répartition des vale
 	        }
 	    }
 	}
+```
 
 Il est possible de faire des calcules avec les aggrégations. L'age moyen des membres de chaque équipe : 
 
+```javascript
 	curl -XPOST 'http://localhost:9200/heroes/person/_search' -d '{
 	    "size": 0,
 	     "aggs" : {
@@ -518,7 +543,7 @@ Il est possible de faire des calcules avec les aggrégations. L'age moyen des me
 	        }
 	    }
 	}
-
+```
 
 ## Application Java
 
@@ -635,6 +660,7 @@ db.installations.find(
 ##### Création du mapping
 On crée d'abord le mapping. Dans cette première version, nous nous contenterons d'un mapping simple : 
 
+```javascript
 	curl -XPOST 'http://localhost:9200/installations' -d '{
 		"mappings": {
 			"installation": {
@@ -650,6 +676,7 @@ On crée d'abord le mapping. Dans cette première version, nous nous contenteron
 			}
 		}
 	}'
+```
 
 #### Import des données dans Elasticsearch
 
@@ -658,6 +685,7 @@ On crée d'abord le mapping. Dans cette première version, nous nous contenteron
 
 Une fois les documents indexés dans ElasticSearch, nous pouvons lancer recherche full text : 
 
+```javascript
 	curl -XPOST 'http://localhost:9200/installations/installation/_search' -d '{
 	    "query": {
 	        "multi_match": {
@@ -666,7 +694,7 @@ Une fois les documents indexés dans ElasticSearch, nous pouvons lancer recherch
 	        }
 	    }
 	}'
-
+```
 
 ### Recherche géographique
 
@@ -697,6 +725,7 @@ db.installations.find({ "location" :
 
 Pour effectuer la même requête dans ElasticSearch : 
 
+```javascript
 	curl -XPOST 'http://localhost:9200/installations/installation/_search' -d '{
 		"query" : {
 			"filtered" : {
@@ -712,3 +741,4 @@ Pour effectuer la même requête dans ElasticSearch :
 			}
 	    }
 	}'
+```
