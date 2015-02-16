@@ -337,7 +337,7 @@ Par exemple :
 
 Les actions sur les index permettent généralement d'effectuer l'opération sur plusieurs index simultanément. Par exemple, pour effectuer une requête sur les index index1 et index2, il est possible d'utiliser l'URL suivante :
 
-	localhost:9200//heroes,vilains/_search
+	localhost:9200/heroes,vilains/_search
 
 Vous trouverez de nombreux exemples (inclusions, exclusions, jokers, ...) dans la documentation.
 
