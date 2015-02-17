@@ -8,7 +8,6 @@ import net.codestory.http.annotations.Get;
 import nosql.workshop.model.Installation;
 import nosql.workshop.model.stats.InstallationsStats;
 import nosql.workshop.services.InstallationService;
-import nosql.workshop.services.SearchService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,12 +25,10 @@ public class InstallationResource {
     public static final int MAX_PAGE_SIZE = 50;
 
     private final InstallationService installationService;
-    private final SearchService searchService;
 
     @Inject
-    public InstallationResource(InstallationService installationService, SearchService searchService) {
+    public InstallationResource(InstallationService installationService) {
         this.installationService = installationService;
-        this.searchService = searchService;
     }
 
     @Get("/")
@@ -76,7 +73,7 @@ public class InstallationResource {
     @Get("/search")
     public List<Installation> search(Context context) {
         String searchQuery = context.query().get("query");
-        return searchService.search(searchQuery);
+        return installationService.search(searchQuery);
     }
 
     @Get("/geosearch")
