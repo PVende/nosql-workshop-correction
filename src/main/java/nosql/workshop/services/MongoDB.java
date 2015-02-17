@@ -2,6 +2,7 @@ package nosql.workshop.services;
 
 import com.mongodb.DB;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
 import org.jongo.Jongo;
 
 import java.net.UnknownHostException;
@@ -20,7 +21,10 @@ public class MongoDB {
      * @throws UnknownHostException si la base n'est pas disponible.
      */
     public Jongo getJongo() throws UnknownHostException {
-        MongoClient mongoClient = new MongoClient();
+        String givenUri = System.getenv("MONGOLAB_URI");
+        String uri = givenUri == null ? "mongodb://localhost:27017/nosql-workshop" : givenUri;
+        MongoClientURI mongoClientURI = new MongoClientURI(uri);
+        MongoClient mongoClient = new MongoClient(mongoClientURI);
         DB db = mongoClient.getDB(DB_NAME);
         return new Jongo(db);
     }
