@@ -12,8 +12,6 @@ import java.net.UnknownHostException;
  */
 public class MongoDB {
 
-    public static final String DB_NAME = "nosql-workshop";
-
     /**
      * Retourne une instance Jongo permettant de se connecter à la base MongoDB.
      *
@@ -25,7 +23,7 @@ public class MongoDB {
         String uri = givenUri == null ? "mongodb://localhost:27017/nosql-workshop" : givenUri;
         MongoClientURI mongoClientURI = new MongoClientURI(uri);
         MongoClient mongoClient = new MongoClient(mongoClientURI);
-        DB db = mongoClient.getDB(DB_NAME);
+        DB db = mongoClient.getDB(mongoClientURI.getDatabase());
         return new Jongo(db);
     }
 }
