@@ -19,7 +19,9 @@ public class Application {
                     routes.add("/api/towns", TownRessource.class);
                 }
         );
-        webServer.start();
+        String providedPort = System.getenv("PORT");
+        String port = providedPort == null ? "8080" : providedPort;
+        webServer.start(Integer.valueOf(port));
     }
 
 }
