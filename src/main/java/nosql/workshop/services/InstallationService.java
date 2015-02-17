@@ -1,6 +1,7 @@
 package nosql.workshop.services;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import nosql.workshop.model.Installation;
 import nosql.workshop.model.stats.Average;
 import nosql.workshop.model.stats.CountByActivity;
@@ -15,6 +16,7 @@ import java.util.Random;
 /**
  * Service permettant de manipuler les installations sportives.
  */
+@Singleton
 public class InstallationService {
 
     /**
