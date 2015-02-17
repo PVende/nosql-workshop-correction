@@ -22,7 +22,7 @@ public class InstallationsImporter {
     }
 
     public void run() {
-        InputStream is = CsvToMongoDb.class.getResourceAsStream("/csv/installations.csv");
+        InputStream is = CsvToMongoDb.class.getResourceAsStream("/batch/csv/installations.csv");
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
             reader.lines()

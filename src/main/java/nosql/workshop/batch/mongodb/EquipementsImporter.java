@@ -15,7 +15,7 @@ public class EquipementsImporter {
     }
 
     public void run() {
-        InputStream is = CsvToMongoDb.class.getResourceAsStream("/csv/equipements.csv");
+        InputStream is = CsvToMongoDb.class.getResourceAsStream("/batch/csv/equipements.csv");
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
             reader.lines()

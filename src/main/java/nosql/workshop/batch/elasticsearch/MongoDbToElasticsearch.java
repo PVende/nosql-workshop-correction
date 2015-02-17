@@ -8,8 +8,6 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.net.UnknownHostException;
 
 import static nosql.workshop.batch.elasticsearch.util.ElasticSearchBatchUtils.*;
