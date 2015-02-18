@@ -120,16 +120,10 @@ Par exemple, pour rechercher toutes les personnes se nommant "DUPONT" :
 db.personnes.find({ "nom" : "DUPONT" })
 ```
 
-Si vous ne souhaitez retourner que les noms et prénoms, sans l'identifiant :
+Si vous ne souhaitez retourner que les noms et prénoms, sans l'identifiant, utilisez une projection (deuxième paramètre de la méthode `find()`) :
 
 ```javascript
 db.personnes.find({ "nom" : "DUPONT" }, {"_id" : 0, "nom" : 1, "prenom" : 1})
-```
-
-Il est également possible de renommer un attribut dans la projection. Par exemple pour renomme le "nom" en "nom_de_famille" :
-
-```javascript
-db.personnes.find({ "nom" : "DUPONT" }, {"_id" : 0, "nom_de_famille" : "$nom", "prenom" : 1})
 ```
 
 #### Insertion : insert()
