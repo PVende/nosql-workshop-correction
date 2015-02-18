@@ -27,11 +27,10 @@ public class MongoDbToElasticsearch {
             mongoClient = new MongoClient(mongoClientURI);
 
             DBCursor cursor = getMongoCursorToAllInstallations(mongoClient);
+            cursor.addOption(com.mongodb.Bytes.QUERYOPTION_NOTIMEOUT);
 
             StreamSupport.stream(cursor.spliterator(), false)
-                    .forEach((dbObject) -> {
-                        indexInstallation(client, dbObject);
-                    });
+                    .forEach((dbObject) -> indexInstallation(client, dbObject));
 
             System.out.println("Inserted all documents in " + (System.currentTimeMillis() - startTime) + " ms");
         } finally {
