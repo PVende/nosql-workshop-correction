@@ -1,16 +1,12 @@
 package nosql.workshop.batch.elasticsearch;
 
 import com.mongodb.*;
-import nosql.workshop.batch.elasticsearch.util.ElasticSearchBatchUtils;
-import org.elasticsearch.action.bulk.BulkRequestBuilder;
-import org.elasticsearch.action.bulk.BulkResponse;
-import org.elasticsearch.client.Client;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import io.searchbox.client.JestClient;
+import io.searchbox.core.Index;
+import nosql.workshop.connection.ESConnectionUtil;
 
 import java.net.UnknownHostException;
-
-import static nosql.workshop.batch.elasticsearch.util.ElasticSearchBatchUtils.*;
+import java.util.stream.StreamSupport;
 
 /**
  * Transferts les documents depuis MongoDB vers Elasticsearch.
@@ -21,36 +17,52 @@ public class MongoDbToElasticsearch {
 
         MongoClient mongoClient = null;
 
+        JestClient client = ESConnectionUtil.createClient();
+
         long startTime = System.currentTimeMillis();
-        try (Client elasticSearchClient = new TransportClient().addTransportAddress(new InetSocketTransportAddress(ES_DEFAULT_HOST, ES_DEFAULT_PORT));){
-            checkIndexExists("installations", elasticSearchClient);
+        try {
+            String mongoGivenUri = System.getenv("MONGOLAB_URI");
+            String uri = mongoGivenUri == null ? "mongodb://localhost:27017/nosql-workshop" : mongoGivenUri;
+            MongoClientURI mongoClientURI = new MongoClientURI(uri);
+            mongoClient = new MongoClient(mongoClientURI);
 
-            mongoClient = new MongoClient();
+            DBCursor cursor = getMongoCursorToAllInstallations(mongoClient);
 
-            // cursor all database objects from mongo db
-            DBCursor cursor = ElasticSearchBatchUtils.getMongoCursorToAllInstallations(mongoClient);
-
-            // prepare bulk insert to Elastic Search
-            BulkRequestBuilder bulkRequest = elasticSearchClient.prepareBulk();
-            while (cursor.hasNext()) {
-                DBObject object = cursor.next();
-
-                String objectId = (String) object.get("_id");
-                object.removeField("dateMiseAJourFiche");
-                bulkRequest.add(elasticSearchClient.prepareIndex("installations", "installation", objectId).setSource(object.toString()));
-            }
-            BulkResponse bulkItemResponses = bulkRequest.execute().actionGet();
-
-            dealWithFailures(bulkItemResponses);
+            StreamSupport.stream(cursor.spliterator(), false)
+                    .forEach((dbObject) -> {
+                        indexInstallation(client, dbObject);
+                    });
 
             System.out.println("Inserted all documents in " + (System.currentTimeMillis() - startTime) + " ms");
-        } finally {
+        }finally {
             if (mongoClient != null) {
                 mongoClient.close();
             }
         }
+    }
 
+    /**
+     * Indexation d'une installation
+     * @param client JestClient to handle insertion
+     * @param dbObject MongoDB object to insert in ES
+     */
+    private static void indexInstallation(JestClient client, DBObject dbObject)  {
+        String objectId = (String) dbObject.get("_id");
+        dbObject.removeField("dateMiseAJourFiche");
 
+        Index index = new Index.Builder(dbObject.toString()).index("installations").type("installation").id(objectId).build();
+        try {
+            client.execute(index);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static DBCursor getMongoCursorToAllInstallations(MongoClient mongoClient) {
+        DB db = mongoClient.getDB("nosql-workshop");
+        DBCollection installationsCollection = db.getCollection("installations");
+
+        return installationsCollection.find();
     }
 
 }

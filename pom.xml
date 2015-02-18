@@ -85,6 +85,12 @@
             <artifactId>elasticsearch</artifactId>
             <version>${elastic.search.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>io.searchbox</groupId>
+            <artifactId>jest</artifactId>
+            <version>0.1.5</version>
+        </dependency>
     </dependencies>
 
     <build>

@@ -8,11 +8,11 @@ import nosql.workshop.services.SearchService;
 import java.util.List;
 
 /**
- * API REST pour les villes
- * Created by Chris on 12/02/15.
+ * API REST qui expose les services liés aux villes
  */
 public class TownRessource {
     private final SearchService searchService;
+
 
     @Inject
     public TownRessource(SearchService searchService) {
