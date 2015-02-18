@@ -17,7 +17,7 @@ public class MongoDbToElasticsearch {
 
         MongoClient mongoClient = null;
 
-        JestClient client = ESConnectionUtil.createClient();
+        JestClient client = ESConnectionUtil.createBonsaiClient();
 
         long startTime = System.currentTimeMillis();
         try {
@@ -34,7 +34,7 @@ public class MongoDbToElasticsearch {
                     });
 
             System.out.println("Inserted all documents in " + (System.currentTimeMillis() - startTime) + " ms");
-        }finally {
+        } finally {
             if (mongoClient != null) {
                 mongoClient.close();
             }
@@ -43,10 +43,11 @@ public class MongoDbToElasticsearch {
 
     /**
      * Indexation d'une installation
-     * @param client JestClient to handle insertion
+     *
+     * @param client   JestClient to handle insertion
      * @param dbObject MongoDB object to insert in ES
      */
-    private static void indexInstallation(JestClient client, DBObject dbObject)  {
+    private static void indexInstallation(JestClient client, DBObject dbObject) {
         String objectId = (String) dbObject.get("_id");
         dbObject.removeField("dateMiseAJourFiche");
 

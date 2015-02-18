@@ -13,23 +13,25 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- *
  * Created by Chris on 12/02/15.
  */
-public class SearchService  {
+public class SearchService {
     public static final String INSTALLATIONS_INDEX = "installations";
     public static final String INSTALLATION_TYPE = "installation";
     public static final String TOWNS_INDEX = "towns";
     private static final String TOWN_TYPE = "town";
 
-    private final JestClient client;
+    private final JestClient searchboxClient;
+    private final JestClient bonsaiClient;
 
     public SearchService() {
-        client = ESConnectionUtil.createClient();
+        searchboxClient = ESConnectionUtil.createSearchboxClient();
+        bonsaiClient = ESConnectionUtil.createBonsaiClient();
     }
 
     /**
      * Recherche les installations à l'aide d'une requête full-text
+     *
      * @param searchQuery la requête
      * @return la listes de installations
      */
@@ -43,9 +45,9 @@ public class SearchService  {
                     .addType(INSTALLATION_TYPE)
                     .build();
 
-            SearchResult result = client.execute(search);
+            SearchResult result = bonsaiClient.execute(search);
             return result.getHits(Installation.class).stream()
-                    .map((hit) -> {return hit.source;})
+                    .map((hit) -> hit.source)
                     .collect(Collectors.toList());
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -55,12 +57,13 @@ public class SearchService  {
 
     /**
      * Suggestion sur les noms des villes
+     *
      * @param townName ville recherchée
      * @return une liste de suggestions
-     *
+     * <p/>
      * TODO pour l'instant très vilain (basé sur une prefix query, merci Jest :D)
      */
-    public List<TownSuggest> suggestTownName(String townName){
+    public List<TownSuggest> suggestTownName(String townName) {
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         searchSourceBuilder.query(QueryBuilders.prefixQuery("townName", townName));
 
@@ -70,10 +73,10 @@ public class SearchService  {
                     .addType(TOWN_TYPE)
                     .build();
 
-            SearchResult result = client.execute(search);
+            SearchResult result = searchboxClient.execute(search);
 
             return result.getHits(TownSuggest.class).stream()
-                    .map((hit) -> {return hit.source;})
+                    .map((hit) -> hit.source)
                     .collect(Collectors.toList());
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -82,6 +85,7 @@ public class SearchService  {
 
     /**
      * Retourne la location [lon,lat] de la ville d'une ville recherchée par son nom
+     *
      * @param townName ville recherchée
      * @return la location associée,
      */
@@ -95,11 +99,11 @@ public class SearchService  {
                 .build();
 
         try {
-            SearchResult result = client.execute(search);
+            SearchResult result = searchboxClient.execute(search);
             SearchResult.Hit<TownSuggest, Void> firstHit = result.getFirstHit(TownSuggest.class);
-            if(firstHit != null){
+            if (firstHit != null) {
                 return firstHit.source.getLocation();
-            }else{
+            } else {
                 return null;
             }
         } catch (Exception e) {

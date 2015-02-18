@@ -19,14 +19,14 @@ import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
  */
 public class ImportTowns {
     public static void main(String[] args) throws IOException {
-        JestClient client = ESConnectionUtil.createClient();
+        JestClient client = ESConnectionUtil.createSearchboxClient();
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(ImportTowns.class.getResourceAsStream("/batch/csv/towns_paysdeloire.csv")));) {
             reader.lines()
                     .skip(1)
                     .filter(line -> line.length() > 0)
                     .forEach(line -> insertTown(line, client));
-        }finally {
+        } finally {
             client.shutdownClient();
         }
 
@@ -49,22 +49,22 @@ public class ImportTowns {
 
             XContentBuilder sourceBuilder = jsonBuilder().
                     startObject()
-                        .field("townName", townName)
-                        .startObject("townNameSuggest")
-                            .field("input", townSuggest)
-                            .field("output", townSuggest)
-                            .startObject("payload")
-                                .startArray("location")
-                                    .value(longitude)
-                                    .value(latitude)
-                                .endArray()
-                            .endObject()
-                        .endObject()
-                        .field("postCode", postCode)
-                        .startArray("location")
-                            .value(longitude)
-                            .value(latitude)
-                        .endArray().endObject();
+                    .field("townName", townName)
+                    .startObject("townNameSuggest")
+                    .field("input", townSuggest)
+                    .field("output", townSuggest)
+                    .startObject("payload")
+                    .startArray("location")
+                    .value(longitude)
+                    .value(latitude)
+                    .endArray()
+                    .endObject()
+                    .endObject()
+                    .field("postCode", postCode)
+                    .startArray("location")
+                    .value(longitude)
+                    .value(latitude)
+                    .endArray().endObject();
 
             Index index = new Index.Builder(sourceBuilder.string()).index("towns").type("town").id(townId).build();
             client.execute(index);
@@ -72,7 +72,7 @@ public class ImportTowns {
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         } catch (Exception e) {
-           throw new RuntimeException(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -80,7 +80,7 @@ public class ImportTowns {
         Pattern pattern = Pattern.compile("(.*\\d+),(\\d+,\\d+),(\\d+.*)");
         Matcher matcher = pattern.matcher(line);
 
-        if(matcher.matches()){
+        if (matcher.matches()) {
             line = matcher.group(1) + "." + matcher.group(2) + "." + matcher.group(3);
         }
         return line;
