@@ -12,7 +12,7 @@ import java.util.List;
 public class Installation {
 
     @Id
-    private String numero;
+    private String _id;
     private String nom;
     private Adresse adresse;
     private Location location;
@@ -22,12 +22,12 @@ public class Installation {
     private Date dateMiseAJourFiche;
     private List<Equipement> equipements;
 
-    public String getNumero() {
-        return numero;
+    public String get_id() {
+        return _id;
     }
 
-    public void setNumero(String numero) {
-        this.numero = numero;
+    public void set_id(String _id) {
+        this._id = _id;
     }
 
     public String getNom() {
