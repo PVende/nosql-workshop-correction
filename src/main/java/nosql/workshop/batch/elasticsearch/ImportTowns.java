@@ -34,10 +34,12 @@ public class ImportTowns {
 
     private static void insertTown(String line, JestClient client) {
         try {
-            line = handleComma(line);
+            line = handleCommaInLocations(line);
 
             String[] split = line.split(",");
 
+            // our data contains some '#' characters, we'll replace them with ''
+            // TODO change original data :D
             String townId = split[0];
             String townName = split[1].replaceAll("\"", "");
             String townSuggest = townName.toLowerCase();
@@ -51,19 +53,19 @@ public class ImportTowns {
                     startObject()
                     .field("townName", townName)
                     .startObject("townNameSuggest")
-                    .field("input", townSuggest)
-                    .field("output", townSuggest)
-                    .startObject("payload")
-                    .startArray("location")
-                    .value(longitude)
-                    .value(latitude)
-                    .endArray()
-                    .endObject()
+                        .field("input", townSuggest)
+                        .field("output", townSuggest)
+                        .startObject("payload")
+                        .startArray("location")
+                            .value(longitude)
+                            .value(latitude)
+                        .endArray()
+                        .endObject()
                     .endObject()
                     .field("postCode", postCode)
                     .startArray("location")
-                    .value(longitude)
-                    .value(latitude)
+                        .value(longitude)
+                        .value(latitude)
                     .endArray().endObject();
 
             Index index = new Index.Builder(sourceBuilder.string()).index("towns").type("town").id(townId).build();
@@ -76,7 +78,7 @@ public class ImportTowns {
         }
     }
 
-    public static String handleComma(String line) {
+    public static String handleCommaInLocations(String line) {
         Pattern pattern = Pattern.compile("(.*\\d+),(\\d+,\\d+),(\\d+.*)");
         Matcher matcher = pattern.matcher(line);
 

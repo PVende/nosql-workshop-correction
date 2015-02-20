@@ -58,6 +58,11 @@ public class MongoDbToElasticsearch {
         }
     }
 
+    /**
+     * Ouverture d'un curseur sur la collection installations de la base nosql-workshop
+     * @param mongoClient le client MongoDb pour faire la requête
+     * @return Le curseur sur la collection
+     */
     public static DBCursor getMongoCursorToAllInstallations(MongoClient mongoClient) {
         DB db = mongoClient.getDB("nosql-workshop");
         DBCollection installationsCollection = db.getCollection("installations");
