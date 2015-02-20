@@ -76,7 +76,7 @@ public class SearchService {
         Suggest towns = buildSuggestRequest(townName, suggestName, fieldName);
 
         try {
-            SuggestResult suggestResult = bonsaiClient.execute(towns);
+            SuggestResult suggestResult = searchboxClient.execute(towns);
 
             List<SuggestResult.SuggestWithPayLoad<TownSuggest>> suggestsWithPayLoad = suggestResult.getSuggestsWithPayLoad(TownSuggest.class);
             suggestsWithPayLoad
